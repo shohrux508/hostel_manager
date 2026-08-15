@@ -36,11 +36,13 @@ RUN groupadd --gid 1000 appuser && \
 
 WORKDIR /app
 
-# Copy python app and dependencies
-COPY --from=builder /app /app
-# Copy static frontend bundle
-COPY --from=frontend-builder /frontend/out /app/frontend/out
+# Copy python app and dependencies with correct ownership
+COPY --from=builder --chown=appuser:appuser /app /app
+# Copy static frontend bundle with correct ownership
+COPY --from=frontend-builder --chown=appuser:appuser /frontend/out /app/frontend/out
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+RUN chown -R appuser:appuser /app
 
 # Switch to non-root user
 USER appuser

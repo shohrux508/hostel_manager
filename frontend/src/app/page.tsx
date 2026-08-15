@@ -230,6 +230,17 @@ export default function HostelDashboard() {
     loadAllData();
   };
 
+  const handleResetHostelData = async () => {
+    if (!confirm("Сбросить номерной фонд к 10 комнатам по 4 места (40 коек)? Все текущие бронирования будут обновлены.")) return;
+    try {
+      await api.resetHostelData();
+      addToast("success", "Номерной фонд успешно инициализирован: 10 комнат по 4 спальных места!");
+      loadAllData();
+    } catch (err: any) {
+      addToast("error", err.message || "Ошибка сброса данных");
+    }
+  };
+
   // Guest CRUD
   const handleOpenAddGuest = () => {
     setEditingGuest(null);
@@ -341,6 +352,7 @@ export default function HostelDashboard() {
               onDeleteRoom={handleDeleteRoom}
               onAddBed={handleAddBed}
               onDeleteBed={handleDeleteBed}
+              onResetData={handleResetHostelData}
               isLoading={isLoading}
             />
           )}

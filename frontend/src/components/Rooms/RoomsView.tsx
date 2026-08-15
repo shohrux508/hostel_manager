@@ -20,6 +20,7 @@ interface RoomsViewProps {
   onDeleteRoom: (roomId: number) => void;
   onAddBed: (roomId: number) => void;
   onDeleteBed: (bedId: number) => void;
+  onResetData?: () => void;
   isLoading: boolean;
 }
 
@@ -39,6 +40,7 @@ export const RoomsView: React.FC<RoomsViewProps> = ({
   onDeleteRoom,
   onAddBed,
   onDeleteBed,
+  onResetData,
   isLoading,
 }) => {
   const [selectedFloor, setSelectedFloor] = useState<string>("all");
@@ -60,23 +62,36 @@ export const RoomsView: React.FC<RoomsViewProps> = ({
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          {/* Floor filter */}
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Этаж:</span>
-            <select
-              value={selectedFloor}
-              onChange={(e) => setSelectedFloor(e.target.value)}
-              className="form-select"
-              style={{ width: "110px", padding: "6px 10px", fontSize: "12.5px" }}
+          {/* Floor filter (shown only when multiple floors exist) */}
+          {floors.length > 1 && (
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Этаж:</span>
+              <select
+                value={selectedFloor}
+                onChange={(e) => setSelectedFloor(e.target.value)}
+                className="form-select"
+                style={{ width: "110px", padding: "6px 10px", fontSize: "12.5px" }}
+              >
+                <option value="all">Все этажи</option>
+                {floors.map((f) => (
+                  <option key={f} value={f}>
+                    {f} этаж
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {onResetData && (
+            <button
+              onClick={onResetData}
+              className="btn btn-secondary btn-sm"
+              title="Сбросить и создать стандартный номерной фонд хостела (10 комнат по 4 спальных места)"
+              style={{ fontSize: "12px", border: "1px dashed rgba(255,255,255,0.2)" }}
             >
-              <option value="all">Все этажи</option>
-              {floors.map((f) => (
-                <option key={f} value={f}>
-                  {f} этаж
-                </option>
-              ))}
-            </select>
-          </div>
+              10 комнат (40 мест)
+            </button>
+          )}
 
           <button onClick={onOpenAddRoom} className="btn btn-primary">
             <Plus size={16} />
@@ -112,9 +127,11 @@ export const RoomsView: React.FC<RoomsViewProps> = ({
                   <span style={{ fontSize: "20px", fontWeight: "800", color: "#fff" }}>
                     №{room.number}
                   </span>
-                  <span className="badge badge-sky" style={{ fontSize: "11px" }}>
-                    {room.floor} этаж
-                  </span>
+                  {room.floor > 1 && (
+                    <span className="badge badge-sky" style={{ fontSize: "11px" }}>
+                      {room.floor} этаж
+                    </span>
+                  )}
                   {!room.is_active && (
                     <span className="badge badge-rose" style={{ fontSize: "11px" }}>
                       Неактивна

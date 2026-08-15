@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
-from app.api.v1 import bookings, chessboard, guests, health, payments, rooms, stats
+from app.api.v1 import bookings, chessboard, guests, health, payments, rooms, stats, system
 from app.core.config import settings
 from app.database.engine import build_engine, build_session_factory
 from app.database.models import Base
@@ -83,6 +83,7 @@ def create_app() -> FastAPI:
     app.include_router(payments.router, prefix="/api/v1")
     app.include_router(chessboard.router, prefix="/api/v1")
     app.include_router(stats.router, prefix="/api/v1")
+    app.include_router(system.router, prefix="/api/v1")
 
     # Mount static frontend if exported
     frontend_out_dir = os.path.join(os.getcwd(), "frontend", "out")

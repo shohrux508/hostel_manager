@@ -152,4 +152,8 @@ export const api = {
   }) => request<Payment>("/payments/", { method: "POST", body: JSON.stringify(data) }),
   refundPayment: (id: number) =>
     request<Payment>(`/payments/${id}/refund`, { method: "POST" }),
+
+  // System
+  resetHostelData: () =>
+    request<{ status: string; message: string }>("/system/reset-hostel-data", { method: "POST" }),
 };

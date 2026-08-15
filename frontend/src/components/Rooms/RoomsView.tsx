@@ -89,8 +89,8 @@ export const RoomsView: React.FC<RoomsViewProps> = ({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
-          gap: "18px",
+          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          gap: "16px",
         }}
       >
         {filteredRooms.map((room) => (

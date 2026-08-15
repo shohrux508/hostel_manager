@@ -53,6 +53,7 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
@@ -66,8 +67,8 @@ html, body {
 
 /* Scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-app);
@@ -85,6 +86,7 @@ html, body {
   display: flex;
   min-height: 100vh;
   width: 100vw;
+  position: relative;
 }
 
 .main-content {
@@ -107,23 +109,23 @@ html, body {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border-subtle);
-  background: rgba(14, 20, 36, 0.7);
-  backdrop-filter: blur(12px);
+  background: rgba(14, 20, 36, 0.85);
+  backdrop-filter: blur(14px);
   position: sticky;
   top: 0;
   z-index: 20;
 }
 
 .page-body {
-  padding: 28px 32px 60px 32px;
+  padding: 24px 32px 60px 32px;
   flex: 1;
 }
 
 /* Typography */
-h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.02em; }
-h2 { font-size: 19px; font-weight: 600; color: var(--text-primary); }
-h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); }
-p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.02em; }
+h2 { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+h3 { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.5; }
 
 /* Buttons */
 .btn {
@@ -141,6 +143,11 @@ p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
   outline: none;
   font-family: inherit;
   white-space: nowrap;
+  user-select: none;
+}
+
+.btn:active {
+  transform: scale(0.97);
 }
 
 .btn-primary {
@@ -151,7 +158,6 @@ p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
 .btn-primary:hover {
   filter: brightness(1.1);
   box-shadow: var(--shadow-glow);
-  transform: translateY(-1px);
 }
 
 .btn-secondary {
@@ -209,7 +215,7 @@ p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
   padding: 10px 14px;
-  font-size: 13.5px;
+  font-size: 14px;
   color: var(--text-primary);
   font-family: inherit;
   outline: none;
@@ -240,6 +246,7 @@ p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
   font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 .badge-emerald { background: var(--accent-emerald-bg); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
 .badge-amber { background: var(--accent-amber-bg); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2); }
@@ -284,6 +291,11 @@ p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
   to { opacity: 1; transform: scale(1); }
 }
 
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
 /* Toast */
 .toast-container {
   position: fixed;
@@ -311,4 +323,82 @@ p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
 @keyframes slideInRight {
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
+}
+
+/* Mobile Helpers */
+.desktop-only {
+  display: flex;
+}
+.mobile-only {
+  display: none !important;
+}
+
+/* ============================================================
+   RESPONSIVE MEDIA QUERIES (Mobile & Tablet)
+   ============================================================ */
+@media (max-width: 900px) {
+  :root {
+    --sidebar-width: 280px;
+    --header-height: 60px;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .app-container {
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .main-content {
+    height: auto;
+    min-height: 100vh;
+    padding-bottom: 74px; /* Space for Mobile Bottom Nav */
+    overflow-y: visible;
+  }
+
+  .top-header {
+    padding: 0 14px;
+    height: 60px;
+  }
+
+  .page-body {
+    padding: 14px 12px 90px 12px;
+  }
+
+  /* Form inputs size prevention on mobile */
+  .form-input, .form-select, .form-textarea {
+    font-size: 16px; /* Prevents auto zoom in iOS Safari */
+    padding: 10px 12px;
+  }
+
+  /* Modal on mobile behaves like a sleek Bottom Sheet */
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    max-width: 100%;
+    max-height: 92vh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: var(--radius-xl);
+    border-top-right-radius: var(--radius-xl);
+    animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .toast-container {
+    bottom: 82px;
+    right: 12px;
+    left: 12px;
+  }
+  .toast {
+    font-size: 12.5px;
+    padding: 10px 14px;
+  }
 }

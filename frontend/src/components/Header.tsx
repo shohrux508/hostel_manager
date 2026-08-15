@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Plus, RefreshCw, Clock, ArrowDownLeft, ArrowUpRight, Bed } from "lucide-react";
+import { Plus, RefreshCw, Clock, ArrowDownLeft, ArrowUpRight, Bed, Menu, Building2 } from "lucide-react";
 import { TodayStats } from "@/types";
 
 interface HeaderProps {
@@ -9,6 +9,7 @@ interface HeaderProps {
   onRefresh: () => void;
   isLoading: boolean;
   stats: TodayStats | null;
+  onToggleMobileSidebar: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -16,6 +17,7 @@ export const Header: React.FC<HeaderProps> = ({
   onRefresh,
   isLoading,
   stats,
+  onToggleMobileSidebar,
 }) => {
   const [currentDateTime, setCurrentDateTime] = useState<string>("");
 
@@ -38,15 +40,46 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="top-header">
-      {/* Left section: Quick stats summary badges */}
-      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--text-secondary)" }}>
+      {/* Left section: Hamburger (Mobile) + Clock/Stats (Desktop) */}
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        {/* Hamburger button visible only on mobile */}
+        <button
+          onClick={onToggleMobileSidebar}
+          className="btn btn-secondary btn-icon mobile-only"
+          style={{ width: "38px", height: "38px", padding: 0 }}
+          title="Открыть боковое меню"
+        >
+          <Menu size={20} />
+        </button>
+
+        {/* Mobile Mini Brand */}
+        <div className="mobile-only" style={{ alignItems: "center", gap: "6px" }}>
+          <div
+            style={{
+              width: "28px",
+              height: "28px",
+              borderRadius: "6px",
+              background: "var(--accent-primary-gradient)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Building2 size={16} color="#fff" />
+          </div>
+          <span style={{ fontSize: "14px", fontWeight: "800", color: "#fff" }}>
+            Hostel<span style={{ color: "var(--accent-primary)" }}>PMS</span>
+          </span>
+        </div>
+
+        {/* Desktop Date & Badges */}
+        <div className="desktop-only" style={{ alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--text-secondary)" }}>
           <Clock size={15} color="var(--accent-primary)" />
           <span style={{ fontWeight: "500" }}>{currentDateTime || "Сегодня"}</span>
         </div>
 
         {stats && (
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "12px" }}>
+          <div className="desktop-only" style={{ alignItems: "center", gap: "10px", marginLeft: "12px" }}>
             <div
               className="badge badge-emerald"
               title="Заезды на сегодня"
@@ -77,8 +110,8 @@ export const Header: React.FC<HeaderProps> = ({
         )}
       </div>
 
-      {/* Right section: Action buttons */}
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+      {/* Right section: Refresh & Quick Booking Action Buttons */}
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <button
           onClick={onRefresh}
           className="btn btn-secondary btn-icon"
@@ -97,10 +130,11 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           onClick={onOpenQuickBooking}
           className="btn btn-primary"
-          style={{ padding: "9px 18px", gap: "6px" }}
+          style={{ padding: "8px 14px", gap: "6px" }}
         >
           <Plus size={18} />
-          <span>Быстрая бронь</span>
+          <span className="desktop-only">Быстрая бронь</span>
+          <span className="mobile-only">Бронь</span>
         </button>
       </div>
 

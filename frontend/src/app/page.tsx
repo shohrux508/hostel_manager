@@ -15,6 +15,7 @@ import { GuestModal } from "@/components/Modals/GuestModal";
 import { PaymentModal } from "@/components/Modals/PaymentModal";
 import { ToastContainer, ToastMessage } from "@/components/Toast";
 import { api } from "@/lib/api";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import {
   Booking,
   ChessboardResponse,
@@ -26,6 +27,7 @@ import {
 
 export default function HostelDashboard() {
   const [currentTab, setCurrentTab] = useState<NavTab>("chessboard");
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
 
   // Global Data State
   const [stats, setStats] = useState<TodayStats | null>(null);
@@ -294,7 +296,13 @@ export default function HostelDashboard() {
   return (
     <div className="app-container">
       {/* Navigation Sidebar */}
-      <Sidebar currentTab={currentTab} onSelectTab={setCurrentTab} stats={stats} />
+      <Sidebar
+        currentTab={currentTab}
+        onSelectTab={setCurrentTab}
+        stats={stats}
+        isMobileOpen={mobileSidebarOpen}
+        onCloseMobile={() => setMobileSidebarOpen(false)}
+      />
 
       {/* Main Screen Layout */}
       <main className="main-content">
@@ -307,6 +315,7 @@ export default function HostelDashboard() {
           onRefresh={loadAllData}
           isLoading={isLoading}
           stats={stats}
+          onToggleMobileSidebar={() => setMobileSidebarOpen((prev) => !prev)}
         />
 
         {/* Page Content View */}
@@ -430,6 +439,9 @@ export default function HostelDashboard() {
         booking={paymentBooking}
         bookings={bookings}
       />
+
+      {/* Mobile Bottom Navigation Bar */}
+      <MobileBottomNav currentTab={currentTab} onSelectTab={setCurrentTab} stats={stats} />
 
       {/* Toast Notification Layer */}
       <ToastContainer toasts={toasts} onRemove={removeToast} />

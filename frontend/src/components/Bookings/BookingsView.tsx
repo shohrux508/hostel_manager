@@ -135,7 +135,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
         </div>
 
         {/* Search Input */}
-        <div style={{ position: "relative", width: "260px" }}>
+        <div style={{ position: "relative", minWidth: "220px", flex: 1, maxWidth: "360px" }}>
           <Search
             size={16}
             color="var(--text-muted)"
@@ -153,7 +153,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
       </div>
 
       {/* Bookings Table */}
-      <div className="glass-card" style={{ overflowX: "auto" }}>
+      <div className="glass-card" style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "13px" }}>
           <thead>
             <tr

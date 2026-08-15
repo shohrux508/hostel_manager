@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 import httpx
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
 from app.api.v1 import bookings, chessboard, guests, health, payments, rooms, stats
@@ -81,5 +83,10 @@ def create_app() -> FastAPI:
     app.include_router(payments.router, prefix="/api/v1")
     app.include_router(chessboard.router, prefix="/api/v1")
     app.include_router(stats.router, prefix="/api/v1")
+
+    # Mount static frontend if exported
+    frontend_out_dir = os.path.join(os.getcwd(), "frontend", "out")
+    if os.path.isdir(frontend_out_dir):
+        app.mount("/", StaticFiles(directory=frontend_out_dir, html=True), name="frontend")
 
     return app

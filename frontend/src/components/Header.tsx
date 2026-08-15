@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Plus, RefreshCw, Clock, ArrowDownLeft, ArrowUpRight, Bed, Menu, Building2 } from "lucide-react";
+import { Plus, RefreshCw, Clock, ArrowDownLeft, ArrowUpRight, Bed, Menu, Building2, Send } from "lucide-react";
 import { TodayStats } from "@/types";
+import { useTelegram } from "@/hooks/useTelegram";
 
 interface HeaderProps {
   onOpenQuickBooking: () => void;
@@ -20,6 +21,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleMobileSidebar,
 }) => {
   const [currentDateTime, setCurrentDateTime] = useState<string>("");
+  const { user, isInsideTelegram, triggerHaptic } = useTelegram();
 
   useEffect(() => {
     const updateTime = () => {
@@ -112,8 +114,28 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Right section: Refresh & Quick Booking Action Buttons */}
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        {user && (
+          <div
+            className="badge badge-sky"
+            style={{
+              padding: "4px 8px",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              fontSize: "11.5px",
+            }}
+            title={`Telegram ID: ${user.id}`}
+          >
+            <Send size={11} />
+            <span>{user.first_name}</span>
+          </div>
+        )}
+
         <button
-          onClick={onRefresh}
+          onClick={() => {
+            triggerHaptic("light");
+            onRefresh();
+          }}
           className="btn btn-secondary btn-icon"
           title="Обновить данные"
           disabled={isLoading}
@@ -128,7 +150,10 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
 
         <button
-          onClick={onOpenQuickBooking}
+          onClick={() => {
+            triggerHaptic("medium");
+            onOpenQuickBooking();
+          }}
           className="btn btn-primary"
           style={{ padding: "8px 14px", gap: "6px" }}
         >

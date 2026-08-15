@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { NavTab } from "./Sidebar";
 import { TodayStats } from "@/types";
+import { useTelegram } from "@/hooks/useTelegram";
 
 interface MobileBottomNavProps {
   currentTab: NavTab;
@@ -22,6 +23,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   onSelectTab,
   stats,
 }) => {
+  const { triggerHaptic } = useTelegram();
   const tabs: { id: NavTab; label: string; icon: React.ElementType; badge?: string | number }[] = [
     { id: "chessboard", label: "Шахматка", icon: CalendarDays },
     { id: "rooms", label: "Номера", icon: BedDouble },
@@ -61,7 +63,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
         return (
           <button
             key={tab.id}
-            onClick={() => onSelectTab(tab.id)}
+            onClick={() => {
+              triggerHaptic("light");
+              onSelectTab(tab.id);
+            }}
             style={{
               flex: 1,
               display: "flex",

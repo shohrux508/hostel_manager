@@ -12,12 +12,14 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_name: str = "backend-template"
+    app_name: str = "hostel-manager"
     debug: bool = False
     database_url: str = "sqlite+aiosqlite:///./dev.db"
     log_level: str = "INFO"
     log_format: str = "text"  # "json" | "text"
     cors_origins: list[str] = ["*"]
+    telegram_bot_token: str | None = None
+    app_public_url: str = "https://hostel-manager-production.up.railway.app"
 
 
 settings = Settings()

@@ -1,120 +1,117 @@
-# backend-template
+# Hostel Manager — Property Management System (PMS)
 
-Промышленный шаблон для быстрого развертывания серверной экосистемы на FastAPI.
-
-Минималистичный, строго типизированный каркас — только чистый REST API, готовый к масштабированию.
+Полнофункциональная система управления хостелом, мини-гостиницей и гостевыми домами на стеке **FastAPI (Backend) + Next.js / React / TypeScript (Frontend)**.
 
 ---
 
-## Быстрый старт
+## 🌟 Возможности системы
 
-### Локально (uv)
+1. **Интерактивная «Шахматка» (Timeline Matrix)**:
+   - Календарная сетка занятости по комнатам и спальным местам (7, 14, 21, 30 дней).
+   - Быстрое бронирование в 1 клик прямо по выбранной ячейке даты и места.
+   - Цветные плашки бронирований с индикацией статуса проживания, оплат и задолженностей.
+   - Детальное досье бронирования с возможностью печати квитанции.
+
+2. **Управление номерами и спальными местами**:
+   - Дормитории (общие, мужские, женские) и приватные номера (Single, Double, Family).
+   - Автоматическая генерация двухъярусных коек (пары Верхнее / Нижнее) и модификаторов тарифов.
+   - Управление этажами, описаниями и вместимостью.
+
+3. **Операционный центр заездов и выездов**:
+   - Быстрый Check-in с приемом доплаты и залога.
+   - Быстрый Check-out с возвратом залога.
+   - Фильтры: «Заезды сегодня», «Проживают сейчас», «Выезды сегодня», «С долгом».
+
+4. **База гостей и документы**:
+   - Полнотекстовый поиск по ФИО, телефону, серии/номеру паспорта и email.
+   - История визитов, общая сумма расходов и заметки о госте.
+
+5. **Касса и учет финансов**:
+   - Прием наличных, банковских карт, переводов СБП и залоговых депозитов.
+   - Учет задолженностей и автоматический расчет баланса.
+   - Оформление возвратов платежей.
+
+---
+
+## 🚀 Быстрый запуск
+
+### 1. Бэкенд (FastAPI)
 
 ```bash
-# Установить зависимости (включая dev)
+# Установка зависимостей (включая dev)
 uv sync --all-extras
 
 # Скопировать переменные окружения
 cp .env.example .env
 
-# Запустить сервер
+# Запустить сервер бэкенда
 uv run python main.py
 
-# Открыть документацию: http://localhost:8000/docs
+# Документация Swagger/OpenAPI: http://localhost:8000/docs
 ```
 
-### Docker
+### 2. Фронтенд (Next.js)
 
 ```bash
-# Скопировать переменные окружения
-cp .env.example .env
+cd frontend
 
-# Собрать и запустить (app + PostgreSQL)
-docker-compose up --build
+# Установка пакетов (если не установлены)
+npm install
+
+# Запуск в режиме разработки
+npm run dev
+
+# Открыть веб-приложение в браузере: http://localhost:3000
 ```
 
 ---
 
-## Структура проекта
+## 📂 Структура проекта
 
 ```
-backend-template/
-├── app/
-│   ├── api/                # Эндпоинты, роутеры, зависимости FastAPI
-│   │   ├── deps.py         # Depends: get_session
-│   │   └── v1/
-│   │       └── health.py   # GET /api/v1/health/
-│   ├── core/               # Конфигурация и оркестратор приложения
-│   │   ├── config.py       # Settings (pydantic-settings)
-│   │   └── container.py    # AppContainer + lifespan + create_app()
-│   ├── database/           # Подключение к БД и ORM-модели
-│   │   ├── engine.py       # AsyncEngine, async_sessionmaker
-│   │   └── models.py       # Base, TimestampMixin
-│   ├── services/           # Слой бизнес-логики (заготовка)
-│   └── logger.py           # Loguru + перехват stdlib логов
-├── migrations/             # Alembic (async, render_as_batch=True)
+hostel_manager/
+├── app/                        # FastAPI Backend
+│   ├── api/v1/                 # REST API Эндпоинты
+│   │   ├── chessboard.py       # GET /api/v1/chessboard/ (сетка шахматки)
+│   │   ├── rooms.py            # CRUD комнат и спальных мест
+│   │   ├── guests.py           # CRUD гостей и поиск
+│   │   ├── bookings.py         # Бронирования, Check-in, Check-out, Отмена
+│   │   ├── payments.py         # Касса, платежи и возвраты
+│   │   ├── stats.py            # Аналитика и загрузка хостела на сегодня
+│   │   └── health.py           # Проверка работоспособности
+│   ├── core/                   # Конфигурация и контейнер приложения
+│   ├── database/               # ORM-модели SQLAlchemy и сидер данных
+│   ├── schemas/                # Pydantic v2 схемы валидации
+│   └── services/               # Сервисный слой бизнес-логики
+├── frontend/                   # Next.js Fullstack Webapp
+│   └── src/
+│       ├── app/                # App Router (page.tsx, layout.tsx, globals.css)
+│       ├── components/         # UI Компоненты
+│       │   ├── Chessboard/     # Интерактивная шахматка
+│       │   ├── Rooms/          # Карточки номеров и коек
+│       │   ├── Bookings/       # Журнал заездов и броней
+│       │   ├── Guests/         # Реестр гостей
+│       │   ├── Finances/       # Касса и финансовые отчеты
+│       │   ├── Modals/         # Модальные окна бронирования, заселения, оплат
+│       │   ├── Sidebar.tsx     # Боковая панель навигации
+│       │   └── Header.tsx      # Верхняя панель
+│       ├── lib/api.ts          # API-клиент
+│       └── types/              # TypeScript типы
 ├── scripts/
-│   └── run_checks.py       # Единый конвейер качества
-├── tests/                  # pytest-asyncio + in-memory SQLite
-├── main.py                 # Точка входа (Windows event loop fix)
-├── pyproject.toml          # Зависимости, ruff, mypy, pytest
-├── Dockerfile              # Multi-stage (python:3.12-slim + uv)
-└── docker-compose.yml      # app + PostgreSQL 16
+│   └── run_checks.py           # Конвейер качества (Ruff + Mypy + Pytest)
+├── tests/                      # Pytest тестовый набор
+├── Dockerfile                  # Multi-stage сборка
+└── docker-compose.yml          # Запуск app + PostgreSQL 16
 ```
 
 ---
 
-## Конфигурация (.env)
-
-| Переменная      | Описание                      | По умолчанию                      |
-|-----------------|-------------------------------|-----------------------------------|
-| `APP_NAME`      | Название приложения           | `backend-template`                |
-| `DEBUG`         | Режим отладки                 | `false`                           |
-| `DATABASE_URL`  | URL базы данных               | `sqlite+aiosqlite:///./dev.db`    |
-| `LOG_LEVEL`     | Уровень логирования           | `INFO`                            |
-| `LOG_FORMAT`    | Формат логов (`text` / `json`)| `text`                            |
-| `CORS_ORIGINS`  | Разрешённые origins           | `*`                               |
-
----
-
-## Миграции (Alembic)
+## 🧪 Проверка качества
 
 ```bash
-# Создать миграцию
-uv run alembic revision --autogenerate -m "описание"
-
-# Применить миграции
-uv run alembic upgrade head
-
-# Откатить на одну
-uv run alembic downgrade -1
-```
-
----
-
-## Проверка качества
-
-```bash
-# Запустить все проверки одной командой
 uv run python scripts/run_checks.py
 ```
-
-Конвейер выполняет:
-1. **ruff check** — линтинг
-2. **ruff format** — форматирование
-3. **mypy --strict** — статическая типизация
-4. **pytest --cov** — тесты с покрытием
-
----
-
-## Стек технологий
-
-| Категория     | Инструменты                                        |
-|---------------|----------------------------------------------------|
-| Web           | FastAPI, Uvicorn, httpx                            |
-| Данные        | SQLAlchemy ≥ 2.0 (async), aiosqlite, asyncpg, Alembic |
-| Конфигурация  | pydantic-settings, python-dotenv                   |
-| Логи          | Loguru (JSON + text, перехват stdlib)               |
-| Качество      | ruff, mypy (strict), pytest, pytest-cov            |
-| Инфраструктура| Docker (multi-stage), docker-compose               |
-| Пакеты        | uv                                                 |
+Конвейер автоматически выполняет:
+- **Ruff Lint & Format** — статический анализ кода;
+- **Mypy (strict)** — строгая статическая типизация;
+- **Pytest + Coverage** — автоматические тесты с отчетом о покрытии.

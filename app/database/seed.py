@@ -148,8 +148,8 @@ async def seed_demo_data(session: AsyncSession, force: bool = False) -> None:
         deposit_amount=Decimal("1000.00"),
         status=BookingStatus.CHECKED_IN,
         source=BookingSource.PHONE,
-        notes="Оплачено полностью, залог внесен",
-        checked_in_at=datetime.now(UTC) - timedelta(days=1),
+        special_requests="Оплачено полностью, залог внесен",
+        actual_check_in_at=datetime.now(UTC) - timedelta(days=1),
     )
     session.add(b1)
 
@@ -166,8 +166,8 @@ async def seed_demo_data(session: AsyncSession, force: bool = False) -> None:
         deposit_amount=Decimal("1000.00"),
         status=BookingStatus.CHECKED_IN,
         source=BookingSource.WALK_IN,
-        notes="Частичная оплата при заселении",
-        checked_in_at=datetime.now(UTC),
+        special_requests="Частичная оплата при заселении",
+        actual_check_in_at=datetime.now(UTC),
     )
     session.add(b2)
 
@@ -184,7 +184,7 @@ async def seed_demo_data(session: AsyncSession, force: bool = False) -> None:
         deposit_amount=Decimal("0.00"),
         status=BookingStatus.CONFIRMED,
         source=BookingSource.WEBSITE,
-        notes="Заезд завтра вечером",
+        special_requests="Заезд завтра вечером",
     )
     session.add(b3)
 
@@ -201,7 +201,7 @@ async def seed_demo_data(session: AsyncSession, force: bool = False) -> None:
         deposit_amount=Decimal("1000.00"),
         status=BookingStatus.CONFIRMED,
         source=BookingSource.BOOKING_COM,
-        notes="Оплачено на сайте",
+        special_requests="Оплачено на сайте",
     )
     session.add(b4)
 

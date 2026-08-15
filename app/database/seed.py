@@ -124,7 +124,7 @@ async def seed_demo_data(session: AsyncSession, force: bool = False) -> None:
             last_name=last_name,
             phone=phone,
             email=email,
-            passport_data=passport,
+            passport_number=passport,
             notes=notes,
         )
         session.add(g)

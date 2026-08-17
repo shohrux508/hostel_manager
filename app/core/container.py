@@ -85,6 +85,11 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # Root health check endpoint
+    @app.get("/health", include_in_schema=False)
+    async def root_health_check() -> dict[str, str]:
+        return {"status": "ok"}
+
     # Register API v1 routers
     app.include_router(health.router, prefix="/api/v1")
     app.include_router(rooms.router, prefix="/api/v1")

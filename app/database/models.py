@@ -88,7 +88,7 @@ class Room(Base, TimestampMixin):
     number: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     floor: Mapped[int] = mapped_column(Integer, default=1)
     category: Mapped[RoomCategory] = mapped_column(
-        Enum(RoomCategory, values_callable=lambda obj: [e.value for e in obj]),
+        Enum(RoomCategory, values_callable=lambda obj: [e.value for e in obj], native_enum=False),
         default=RoomCategory.DORM_MIXED,
     )
     capacity: Mapped[int] = mapped_column(Integer, default=1)
@@ -114,7 +114,7 @@ class Bed(Base, TimestampMixin):
     room_id: Mapped[int] = mapped_column(ForeignKey("rooms.id", ondelete="CASCADE"), index=True)
     bed_number: Mapped[str] = mapped_column(String(50))
     tier: Mapped[BedTier] = mapped_column(
-        Enum(BedTier, values_callable=lambda obj: [e.value for e in obj]),
+        Enum(BedTier, values_callable=lambda obj: [e.value for e in obj], native_enum=False),
         default=BedTier.SINGLE,
     )
     price_modifier: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=0.00)
@@ -169,7 +169,7 @@ class Booking(Base, TimestampMixin):
     check_out_date: Mapped[date] = mapped_column(Date, index=True)
 
     status: Mapped[BookingStatus] = mapped_column(
-        Enum(BookingStatus, values_callable=lambda obj: [e.value for e in obj]),
+        Enum(BookingStatus, values_callable=lambda obj: [e.value for e in obj], native_enum=False),
         default=BookingStatus.CONFIRMED,
         index=True,
     )
@@ -179,7 +179,7 @@ class Booking(Base, TimestampMixin):
     deposit_amount: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=0.00)
 
     source: Mapped[BookingSource] = mapped_column(
-        Enum(BookingSource, values_callable=lambda obj: [e.value for e in obj]),
+        Enum(BookingSource, values_callable=lambda obj: [e.value for e in obj], native_enum=False),
         default=BookingSource.WALK_IN,
     )
 
@@ -213,11 +213,11 @@ class Payment(Base, TimestampMixin):
 
     amount: Mapped[Decimal] = mapped_column(Numeric(10, 2))
     payment_type: Mapped[PaymentType] = mapped_column(
-        Enum(PaymentType, values_callable=lambda obj: [e.value for e in obj]),
+        Enum(PaymentType, values_callable=lambda obj: [e.value for e in obj], native_enum=False),
         default=PaymentType.CASH,
     )
     payment_status: Mapped[PaymentStatus] = mapped_column(
-        Enum(PaymentStatus, values_callable=lambda obj: [e.value for e in obj]),
+        Enum(PaymentStatus, values_callable=lambda obj: [e.value for e in obj], native_enum=False),
         default=PaymentStatus.COMPLETED,
     )
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)

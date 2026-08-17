@@ -30,6 +30,10 @@ COPY . .
 # ============================================================
 FROM python:3.12-slim
 
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PATH="/app/.venv/bin:$PATH"
+
 # Create non-root user
 RUN groupadd --gid 1000 appuser && \
     useradd --uid 1000 --gid appuser --create-home appuser
@@ -40,7 +44,6 @@ WORKDIR /app
 COPY --from=builder --chown=appuser:appuser /app /app
 # Copy static frontend bundle with correct ownership
 COPY --from=frontend-builder --chown=appuser:appuser /frontend/out /app/frontend/out
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 RUN chown -R appuser:appuser /app
 
@@ -49,4 +52,4 @@ USER appuser
 
 EXPOSE 8000
 
-CMD ["uv", "run", "python", "main.py"]
+CMD ["python", "main.py"]

@@ -8,6 +8,7 @@ import httpx
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
 from app.api.v1 import (
@@ -44,12 +45,20 @@ class AppContainer:
         self.http_client = httpx.AsyncClient(timeout=30.0)
 
         # Create tables automatically
-        async with self.engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
+        try:
+            async with self.engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            logger.info("Database schema verified/created successfully.")
+        except Exception as exc:
+            logger.error(f"Error creating database tables: {exc}")
 
         # Seed sample data for dev/demo
-        async with self.session_factory() as session:
-            await seed_demo_data(session)
+        try:
+            async with self.session_factory() as session:
+                await seed_demo_data(session)
+            logger.info("Database seeded successfully or already initialized.")
+        except Exception as exc:
+            logger.error(f"Error seeding database: {exc}")
 
     async def stop(self) -> None:
         """Gracefully shut down all resources."""

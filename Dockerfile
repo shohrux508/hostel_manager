@@ -12,21 +12,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # ============================================================
-# Stage 2: Build Python dependencies
-# ============================================================
-FROM python:3.12-slim AS builder
-
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
-
-WORKDIR /app
-
-COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev --no-editable
-
-COPY . .
-
-# ============================================================
-# Stage 3: Production runtime
+# Stage 2: Production runtime (Python 3.12)
 # ============================================================
 FROM python:3.12-slim
 
@@ -40,14 +26,22 @@ RUN groupadd --gid 1000 appuser && \
 
 WORKDIR /app
 
-# Copy python app and dependencies with correct ownership
-COPY --from=builder --chown=appuser:appuser /app /app
-# Copy static frontend bundle with correct ownership
-COPY --from=frontend-builder --chown=appuser:appuser /frontend/out /app/frontend/out
+# Install uv binary
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
+# Install Python dependencies directly in runtime stage to avoid broken symlinks
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-editable
+
+# Copy Python application code
+COPY . .
+
+# Copy static frontend bundle from Stage 1
+COPY --from=frontend-builder /frontend/out /app/frontend/out
+
+# Ensure correct file permissions for appuser
 RUN chown -R appuser:appuser /app
 
-# Switch to non-root user
 USER appuser
 
 EXPOSE 8000
